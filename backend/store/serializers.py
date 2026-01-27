@@ -10,12 +10,11 @@ from .models import (
     OrderItem,
     Product,
     Category,
-    ProductImage,
-    Review,
+    ProductAsset,
 )
 
 
-class CollectionSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ["id", "title", "products_count"]
@@ -23,18 +22,18 @@ class CollectionSerializer(serializers.ModelSerializer):
     products_count = serializers.IntegerField(read_only=True)
 
 
-class ProductImageSerializer(serializers.ModelSerializer):
+class ProductAssetSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         product_id = self.context["product_id"]
-        return ProductImage.objects.create(product_id=product_id, **validated_data)
+        return ProductAsset.objects.create(product_id=product_id, **validated_data)
 
     class Meta:
-        model = ProductImage
+        model = ProductAsset
         fields = ["id", "image"]
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    images = ProductImageSerializer(many=True, read_only=True)
+    images = ProductAssetSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -46,7 +45,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "inventory",
             "unit_price",
             "price_with_tax",
-            "collection",
+            "category",
             "images",
         ]
 
@@ -56,14 +55,14 @@ class ProductSerializer(serializers.ModelSerializer):
         return product.unit_price * Decimal(1.1)
 
 
-class ReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = ["id", "date", "name", "description"]
+# class ReviewSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Review
+#         fields = ["id", "date", "name", "description"]
 
-    def create(self, validated_data):
-        product_id = self.context["product_id"]
-        return Review.objects.create(product_id=product_id, **validated_data)
+#     def create(self, validated_data):
+#         product_id = self.context["product_id"]
+#         return Review.objects.create(product_id=product_id, **validated_data)
 
 
 class SimpleProductSerializer(serializers.ModelSerializer):
