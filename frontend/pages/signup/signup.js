@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
+import { signup } from '@/utils/auth'
 
 export default function Signup() {
   const [userRole, setUserRole] = useState('artisan') // 'artisan' or 'buyer'
@@ -30,6 +31,7 @@ export default function Signup() {
     e.preventDefault()
     console.log('Form submitted:', { ...formData, role: userRole })
     // Add your registration logic here
+    signup(formData,userRole);
   }
 
   const craftOptions = [
