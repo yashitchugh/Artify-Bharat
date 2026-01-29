@@ -1,3 +1,4 @@
+from typing import TypedDict
 from django.contrib import admin
 from django.conf import settings
 from django.core.validators import MinValueValidator
@@ -34,7 +35,7 @@ class Product(models.Model):
         Category, on_delete=models.PROTECT, related_name="products"
     )
     artisan = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        "Artisan",
         on_delete=models.CASCADE,
         related_name="products",
         default=1,
@@ -61,11 +62,28 @@ class ProductAsset(models.Model):
     )
 
 
+class DashboardStats(TypedDict):
+    products_count: int
+    total_sales: int
+    active_orders: int
+    ai_verified: int
+
+
+def default_stats():
+    stats = DashboardStats()
+    stats["active_orders"] = 0
+    stats["ai_verified"] = 0
+    stats["total_sales"] = 0
+    stats["products_count"] = 0
+    return stats
+
+
 class Artisan(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     experience = models.IntegerField()
     speciality = models.CharField(max_length=255)
-    bio = models.TextField(null=True,blank=True)
+    bio = models.TextField(null=True, blank=True)
+    stats = models.JSONField(default=default_stats)
     # orders
 
 
@@ -84,7 +102,7 @@ class Customer(models.Model):
         max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE
     )
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    interests = models.JSONField(default=list,blank=True)
+    interests = models.JSONField(default=list, blank=True)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -138,9 +156,11 @@ class OrderItem(models.Model):
 class Address(models.Model):
     local_address = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    state = models.CharField(max_length=50,null=True)
-    pincode = models.CharField(max_length=10,null=True)
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='address')
+    state = models.CharField(max_length=50, null=True)
+    pincode = models.CharField(max_length=10, null=True)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="address"
+    )
 
 
 class Cart(models.Model):

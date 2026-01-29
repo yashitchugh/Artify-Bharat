@@ -1,4 +1,4 @@
-from decimal import Decimal
+# from decimal import Decimal
 from django.db import transaction
 from rest_framework import serializers
 from .signals import order_created
@@ -208,3 +208,32 @@ class CreateOrderSerializer(serializers.Serializer):
             order_created.send_robust(self.__class__, order=order)
 
             return order
+
+
+class CreateUserSerializer(serializers.Serializer):
+    userRole = serializers.CharField()
+    firstName = serializers.CharField()
+    lastName = serializers.CharField()
+    email = serializers.EmailField()
+    password = serializers.CharField()
+    phone = serializers.CharField()
+    address = serializers.CharField()
+    city = serializers.CharField()
+    state = serializers.CharField()
+    pincode = serializers.CharField()
+
+#  Sample Data
+# {
+#     "userRole": "artisan",
+#     "firstName": "Parth",
+#     "lastName": "Chawla",
+#     "email": "parth@domain.com",
+#     "password": "parth1234",
+#     "phone": "+918923641290",
+#     "address": "abc",
+#     "city": "a",
+#     "state": "b",
+#     "pincode": "100000",
+#     "craftSpeciality": "pottery",
+#     "experience": 4
+# }

@@ -1,5 +1,5 @@
 from django.urls import path
-from django.urls.conf import include
+# from django.urls.conf import include
 from rest_framework_nested import routers
 from . import views
 
@@ -27,5 +27,6 @@ urlpatterns = (
         path("stats/", views.get_dashboard_stats),
         path("login/", views.LoginView.as_view()),
         path("logout/", views.LogoutView.as_view()),
+        path("signup/", views.SignupView.as_view()),
     ]
 )
