@@ -1,3 +1,4 @@
+from typing import TypedDict
 from django.contrib import admin
 from django.conf import settings
 from django.core.validators import MinValueValidator
@@ -155,3 +156,10 @@ class CartItem(models.Model):
 
     class Meta:
         unique_together = [["cart", "product"]]
+
+
+class DashboardStats(TypedDict):
+    products_count: int
+    total_sales: int
+    active_orders: int
+    ai_verified: int

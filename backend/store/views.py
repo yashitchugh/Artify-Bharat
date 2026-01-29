@@ -39,6 +39,7 @@ from .models import (
     CartItem,
     Category,
     Customer,
+    DashboardStats,
     Order,
     OrderItem,
     Product,
@@ -266,13 +267,21 @@ class SignupView(APIView):
 
 @api_view
 def get_dashboard_stats(request):
-    # res = {}
     if request.user.is_authenticated and request.user.artisan.exists():
-        print("hi")
-    # Product count
-
-    # Total sales
-
-    # Active orders
-
-    # AI verified
+        artisan: Artisan = request.user.artisan
+        stats: DashboardStats = DashboardStats()
+        # Product count
+        stats["products_count"] = artisan.products.count()
+        # Total sales
+        total_price = 0
+        for item in artisan.orderitems.filter(order__delivered=True).all():
+            total_price += item.quantity * item.unit_price
+        stats["total_sales"] = total_price
+        # Active orders
+        stats["active_orders"] = artisan.orderitems.order.filter(
+            delivered=False
+        ).count()
+        # AI verified
+        stats["ai_verified"] = 98
+        
+        return stats
