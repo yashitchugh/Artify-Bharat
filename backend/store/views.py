@@ -1,13 +1,6 @@
-import email
-from core.models import User
-from store.permissions import (
-    FullDjangoModelPermissions,
-    IsAdminOrReadOnly,
-    ViewCustomerHistoryPermission,
-)
-from store.pagination import DefaultPagination
 from django.db.models.aggregates import Count
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.db.transaction import atomic
 
 # from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -17,22 +10,31 @@ from rest_framework.mixins import (
     CreateModelMixin,
     DestroyModelMixin,
     RetrieveModelMixin,
-    UpdateModelMixin,
+    # UpdateModelMixin,
 )
 from rest_framework.permissions import (
-    AllowAny,
-    DjangoModelPermissions,
-    DjangoModelPermissionsOrAnonReadOnly,
+    # AllowAny,
+    # DjangoModelPermissions,
+    # DjangoModelPermissionsOrAnonReadOnly,
     IsAdminUser,
     IsAuthenticated,
 )
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status
 from .filters import ProductFilter
+from .permissions import (
+    # FullDjangoModelPermissions,
+    IsAdminOrReadOnly,
+    ViewCustomerHistoryPermission,
+)
+from .pagination import DefaultPagination
 from .models import (
+    Address,
+    Artisan,
     Cart,
     CartItem,
     Category,
@@ -49,6 +51,7 @@ from .serializers import (
     CartSerializer,
     CategorySerializer,
     CreateOrderSerializer,
+    # CreateUserSerializer,
     CustomerSerializer,
     OrderSerializer,
     ProductAssetSerializer,
@@ -223,13 +226,47 @@ class LogoutView(APIView):
         logout(request=request)
         return Response("User logged out")
 
+
 class SignupView(APIView):
-    def post(self,request):
-        pass
+    def post(self, request):
+        # print(request.data)
+        with atomic():
+            user_model = get_user_model()
+            user = user_model()
+            user.first_name = request.data.get("firstName")
+            user.last_name = request.data.get("lastName")
+            user.email = request.data.get("email")
+            user.password = request.data.get("password")
+            user.phone_no = request.data.get("phone")
+            user.save()
+            address = Address()
+            address.local_address = request.data.get("address")
+            address.city = request.data.get("city")
+            address.state = request.data.get("state")
+            address.pincode = request.data.get("pincode")
+            address.user = user
+            address.save()
+            userRole = request.data.get("userRole")
+            if userRole == "artisan":
+                artisan = Artisan()
+                artisan.speciality = request.data.get("craftSpeciality")
+                artisan.experience = request.data.get("experience")
+                artisan.bio = request.data.get("bio")
+                artisan.user_id = user.id
+                artisan.save()
+            elif userRole == "buyer":
+                customer = Customer()
+                customer.user = user
+                customer.interests = list(request.data.get("interests"))
+                customer.save()
+            else:
+                return ValidationError("Client Side Error!!")
+        return Response("Account Created Successfully!!")
+
 
 @api_view
 def get_dashboard_stats(request):
-    res = {}
+    # res = {}
     if request.user.is_authenticated and request.user.artisan.exists():
         print("hi")
     # Product count
