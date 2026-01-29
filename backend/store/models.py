@@ -35,7 +35,7 @@ class Product(models.Model):
         Category, on_delete=models.PROTECT, related_name="products"
     )
     artisan = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        "Artisan",
         on_delete=models.CASCADE,
         related_name="products",
         default=1,
@@ -67,6 +67,7 @@ class DashboardStats(TypedDict):
     total_sales: int
     active_orders: int
     ai_verified: int
+
 
 def default_stats():
     stats = DashboardStats()

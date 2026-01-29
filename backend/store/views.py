@@ -265,9 +265,9 @@ class SignupView(APIView):
         return Response("Account Created Successfully!!")
 
 
-@api_view
+@api_view(http_method_names=["GET"])
 def get_dashboard_stats(request):
-    if request.user.is_authenticated and request.user.artisan.exists():
+    if request.user.is_authenticated and hasattr(request.user, "artisan"):
         artisan: Artisan = request.user.artisan
         stats: DashboardStats = DashboardStats()
         # Product count
@@ -278,9 +278,14 @@ def get_dashboard_stats(request):
             total_price += item.quantity * item.unit_price
         stats["total_sales"] = total_price
         # Active orders
-        stats["active_orders"] = artisan.orderitems.order.filter(
-            delivered=False
-        ).count()
+        # stats["active_orders"] = artisan.orderitems.order.filter(
+        #     delivered=False
+        # ).count()
+        stats["active_orders"] = (
+            Order.objects.filter(items__product__artisan=artisan, delivered=False)
+            .distinct()
+            .count()
+        )
         # AI verified
         stats["ai_verified"] = 98
         old_stats: DashboardStats = artisan.stats
@@ -290,3 +295,4 @@ def get_dashboard_stats(request):
         change["products_count"] = stats["products_count"] - old_stats["products_count"]
         change["total_sales"] = stats["total_sales"] - old_stats["total_sales"]
         return Response({"stats": stats, "change": change})
+    return Response("You are not an Artisan!")

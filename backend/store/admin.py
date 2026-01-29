@@ -6,6 +6,9 @@ from django.urls import reverse
 from . import models
 
 
+admin.site.register(models.Artisan)
+
+
 class InventoryFilter(admin.SimpleListFilter):
     title = "inventory"
     parameter_name = "inventory"
@@ -76,9 +79,7 @@ class CategoryAdmin(admin.ModelAdmin):
             + "?"
             + urlencode({"category__id": str(category.id)})
         )
-        return format_html(
-            '<a href="{}">{} Products</a>', url, category.products_count
-        )
+        return format_html('<a href="{}">{} Products</a>', url, category.products_count)
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(products_count=Count("products"))
