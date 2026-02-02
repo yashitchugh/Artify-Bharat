@@ -25,6 +25,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 from .filters import ProductFilter
 from .permissions import (
     # FullDjangoModelPermissions,
@@ -267,7 +268,16 @@ class SignupView(APIView):
                 customer.save()
             else:
                 return ValidationError("Client Side Error!!")
-        return Response("Account Created Successfully!!")
+        refresh = RefreshToken.for_user(user)
+
+        return Response(
+            {
+                "message": "Success",
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            }
+        )
+        # return Response("Account Created Successfully!!")
 
 
 @api_view(http_method_names=["GET"])
