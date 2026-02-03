@@ -239,7 +239,7 @@ class SignupView(APIView):
             user.first_name = request.data.get("firstName")
             user.last_name = request.data.get("lastName")
             user.email = request.data.get("email")
-            user.password = request.data.get("password")
+            user.set_password(request.data.get("password"))
             user.phone_no = request.data.get("phone")
             user.save()
             address = Address()
@@ -250,9 +250,6 @@ class SignupView(APIView):
             address.user = user
             address.save()
             userRole = request.data.get("userRole")
-            login(
-                user,
-            )
             if userRole == "artisan":
                 artisan = Artisan()
                 print(request.data.get("craftSpecialty"))
