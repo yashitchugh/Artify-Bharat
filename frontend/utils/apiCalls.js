@@ -32,4 +32,13 @@ export async function getDashboardStats() {
         'stats': response.data['stats'],
         'change': response.data['change'],
     }
-}   
+}
+
+export async function getOrders() {
+    const response = await api.get('/store/orders',{params:{
+        'role': 'artisan'
+    } })
+    console.log(response.data)
+    return response.data
+    
+}
