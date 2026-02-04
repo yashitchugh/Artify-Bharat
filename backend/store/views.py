@@ -192,7 +192,17 @@ class OrderViewSet(ModelViewSet):
         user = self.request.user
 
         if user.is_staff:
+            print("hm")
             return Order.objects.all()
+        elif self.request.query_params.get("role").lower() == "artisan":
+            print(user.artisan.id)
+            orders = list(
+                Order.objects.filter(items__product__artisan=user.artisan)
+                .distinct()
+                .all()
+            )
+            print(orders)
+            return orders
 
         customer_id = Customer.objects.only("id").get(user_id=user.id)
         return Order.objects.filter(customer_id=customer_id)
@@ -239,7 +249,7 @@ class SignupView(APIView):
             user.first_name = request.data.get("firstName")
             user.last_name = request.data.get("lastName")
             user.email = request.data.get("email")
-            user.password = request.data.get("password")
+            user.set_password(request.data.get("password"))
             user.phone_no = request.data.get("phone")
             user.save()
             address = Address()
@@ -250,9 +260,6 @@ class SignupView(APIView):
             address.user = user
             address.save()
             userRole = request.data.get("userRole")
-            login(
-                user,
-            )
             if userRole == "artisan":
                 artisan = Artisan()
                 print(request.data.get("craftSpecialty"))
@@ -314,5 +321,6 @@ def get_dashboard_stats(request):
         change["ai_verified"] = stats["ai_verified"] - old_stats["ai_verified"]
         change["products_count"] = stats["products_count"] - old_stats["products_count"]
         change["total_sales"] = stats["total_sales"] - old_stats["total_sales"]
+        print(stats, change)
         return Response({"stats": stats, "change": change})
     return Response("You are not an Artisan!")
