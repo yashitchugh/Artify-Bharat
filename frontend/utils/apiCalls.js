@@ -35,9 +35,12 @@ export async function getDashboardStats() {
 }
 
 export async function getOrders() {
-    const response = await api.get('/store/orders',{params:{
+    const response = await api.get('/store/orders',{
+        params:
+    {
         'role': 'artisan'
-    } })
+    } 
+})
     console.log(response.data)
     return response.data
     
