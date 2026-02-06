@@ -35,10 +35,26 @@ export async function getDashboardStats() {
 }
 
 export async function getOrders() {
-    const response = await api.get('/store/orders',{params:{
+    const response = await api.get('store/orders',{
+        params:
+    {
         'role': 'artisan'
-    } })
+    } 
+})
     console.log(response.data)
     return response.data
     
+}
+
+export async function createProduct(formData) {
+    console.log(formData);
+    const response = await api.post('/store/products/',formData)
+    if (response.status === 200){
+        console.log('Product added succesfully!!');
+        return 1;
+    }
+    else{
+        Promise.reject()    
+        return 0;
+    }
 }

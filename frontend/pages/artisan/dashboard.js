@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { getDashboardStats } from "@/utils/apiCalls";
+import { createProduct, getDashboardStats } from "@/utils/apiCalls";
 
 /* ================= DASHBOARD ================= */
 
@@ -10,7 +10,7 @@ export default function ArtisanDashboard() {
   const [data,setData] = useState({});
   const [change,setChange] = useState({});
   const [artisanData] = useState({
-    name: "Rajesh Kumar",
+    title: "Rajesh Kumar",
     profileImage: null,
     city: "Jaipur",
     state: "Rajasthan",
@@ -105,7 +105,7 @@ export default function ArtisanDashboard() {
                   ) : (
                     <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#c2794d] to-[#8b6f47] flex items-center justify-center border-4 shadow-md">
                       <span className="text-3xl text-white font-bold">
-                        {artisanData.name.charAt(0)}
+                        {artisanData.title.charAt(0)}
                       </span>
                     </div>
                   )}
@@ -258,15 +258,15 @@ function ActivityItem({ title, time }) {
 
 function AddProductModal({ onClose }) {
   const [formData, setFormData] = useState({
-    name: "",
+    title: "",
     description: "",
-    price: "",
+    unit_price: 0,
     category: "",
-    inventory: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    createProduct(formData);
     console.log(formData);
     onClose();
   };
@@ -280,8 +280,8 @@ function AddProductModal({ onClose }) {
           <input
             className="w-full p-3 border rounded-xl"
             placeholder="Product name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           />
 
           <textarea
@@ -297,18 +297,18 @@ function AddProductModal({ onClose }) {
             <input
               className="p-3 border rounded-xl"
               placeholder="Price"
-              value={formData.price}
+              value={formData.unit_price}
               onChange={(e) =>
-                setFormData({ ...formData, price: e.target.value })
+                setFormData({ ...formData, unit_price: e.target.value })
               }
             />
 
             <input
               className="p-3 border rounded-xl"
-              placeholder="Stock"
-              value={formData.inventory}
+              placeholder="Category"
+              value={formData.category}
               onChange={(e) =>
-                setFormData({ ...formData, inventory: e.target.value })
+                setFormData({ ...formData, category: e.target.value })
               }
             />
           </div>

@@ -1,20 +1,26 @@
 // ## pages/artisan/orders.js
 // ````javascript
+import { getOrders } from '@/utils/apiCalls'
 import AppLayout from '../../components/AppLayout'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function OrderManagement() {
   const [activeTab, setActiveTab] = useState('all')
   const [selectedTimeFilter, setSelectedTimeFilter] = useState('all')
-  
-  const orders = [
-    { id: '#011', buyer: 'Joan Proctor Urn', location: 'Mumbai, Maharashtra', amount: 1349, time: '2h ago', status: 'pending', product: '🏺' },
-    { id: '#502', buyer: 'Santanu Das', location: 'Delhi, NCR', amount: 2450, time: '6.34h ago', status: 'pending', product: '🧺' },
-    { id: '#204', buyer: 'Sunaina Nath', location: 'Bangalore, Karnataka', amount: 3670, time: '7h ago', status: 'confirmed', product: '🪔' },
-    { id: '#156', buyer: 'Ramesh Kumar', location: 'Jaipur, Rajasthan', amount: 890, time: '1d ago', status: 'shipped', product: '📿' },
-    { id: '#089', buyer: 'Priya Singh', location: 'Pune, Maharashtra', amount: 1200, time: '2d ago', status: 'completed', product: '🧣' },
-    { id: '#045', buyer: 'Arjun Reddy', location: 'Hyderabad, Telangana', amount: 560, time: '3d ago', status: 'completed', product: '🏺' },
-  ]
+  const [orders,setOrders] = useState([])
+  // const orders = [
+  //   { id: '#011', buyer: 'Joan Proctor Urn', location: 'Mumbai, Maharashtra', amount: 1349, time: '2h ago', status: 'pending', product: '🏺' },
+  //   { id: '#502', buyer: 'Santanu Das', location: 'Delhi, NCR', amount: 2450, time: '6.34h ago', status: 'pending', product: '🧺' },
+  //   { id: '#204', buyer: 'Sunaina Nath', location: 'Bangalore, Karnataka', amount: 3670, time: '7h ago', status: 'confirmed', product: '🪔' },
+  //   { id: '#156', buyer: 'Ramesh Kumar', location: 'Jaipur, Rajasthan', amount: 890, time: '1d ago', status: 'shipped', product: '📿' },
+  //   { id: '#089', buyer: 'Priya Singh', location: 'Pune, Maharashtra', amount: 1200, time: '2d ago', status: 'completed', product: '🧣' },
+  //   { id: '#045', buyer: 'Arjun Reddy', location: 'Hyderabad, Telangana', amount: 560, time: '3d ago', status: 'completed', product: '🏺' },
+  // ]
+  useEffect(
+    () => {
+      setOrders(getOrders())  
+    }
+  )
 
   const tabs = [
     { id: 'all', label: 'All Orders', count: orders.length },

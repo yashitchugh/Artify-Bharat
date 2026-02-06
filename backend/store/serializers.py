@@ -43,7 +43,7 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
-            # "description",
+            "description",
             # "slug",
             # "inventory",
             "price",
@@ -60,7 +60,22 @@ class ProductSerializer(serializers.ModelSerializer):
         return product.unit_price
 
     def get_artisan(self, product: Product):
-        return f"{product.artisan.first_name} {product.artisan.last_name}"
+        return f"{product.artisan.user.first_name} {product.artisan.user.last_name}"
+
+
+class CreateProductSerializer(serializers.ModelSerializer):
+    """Serializer for creating products with writable fields"""
+
+    class Meta:
+        model = Product
+        fields = [
+            "title",
+            "description",
+            "unit_price",
+            "category",
+            "artisan",
+            "inventory",
+        ]
 
 
 # class ReviewSerializer(serializers.ModelSerializer):
@@ -221,6 +236,7 @@ class CreateUserSerializer(serializers.Serializer):
     city = serializers.CharField()
     state = serializers.CharField()
     pincode = serializers.CharField()
+
 
 #  Sample Data
 # {
