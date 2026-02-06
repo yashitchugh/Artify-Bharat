@@ -30,6 +30,7 @@ from .filters import ProductFilter
 from .permissions import (
     # FullDjangoModelPermissions,
     IsAdminOrReadOnly,
+    IsArtisanOrReadOnly,
     ViewCustomerHistoryPermission,
 )
 from .pagination import DefaultPagination
@@ -53,6 +54,7 @@ from .serializers import (
     CartSerializer,
     CategorySerializer,
     CreateOrderSerializer,
+    CreateProductSerializer,
     # CreateUserSerializer,
     CustomerSerializer,
     OrderSerializer,
@@ -70,12 +72,64 @@ class ProductViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
     pagination_class = DefaultPagination
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsArtisanOrReadOnly]
     search_fields = ["title", "description"]
     ordering_fields = ["unit_price", "last_update"]
 
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateProductSerializer
+        return ProductSerializer
+
     def get_serializer_context(self):
         return {"request": self.request}
+
+    def create(self, request, *args, **kwargs):
+        try:
+            # Get artisan for current user
+            artisan = Artisan.objects.get(user=self.request.user)
+        except Artisan.DoesNotExist:
+            return Response(
+                {"error": "User is not registered as an artisan."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Prepare data for serializer
+        data = (
+            request.data.copy() if hasattr(request.data, "copy") else dict(request.data)
+        )
+
+        # Map 'price' to 'unit_price' if needed
+        if "price" in data and "unit_price" not in data:
+            data["unit_price"] = data.pop("price")
+
+        # Lookup category
+        category_title = data.get("category")
+        if not category_title:
+            return Response(
+                {"error": "Category is required."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            category = Category.objects.get(title=category_title)
+        except Category.DoesNotExist:
+            return Response(
+                {"error": f"Category '{category_title}' not found."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Create product
+        data["category"] = category.id
+        data["artisan"] = artisan.id
+
+        # Use CreateProductSerializer for validation and creation
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        product = serializer.save()
+
+        # Return response using ProductSerializer for consistent output format
+        response_serializer = ProductSerializer(product, context={"request": request})
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         if OrderItem.objects.filter(product_id=kwargs["pk"]).count() > 0:
