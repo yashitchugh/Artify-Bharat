@@ -30,6 +30,7 @@ from .filters import ProductFilter
 from .permissions import (
     # FullDjangoModelPermissions,
     IsAdminOrReadOnly,
+    IsArtisanOrReadOnly,
     ViewCustomerHistoryPermission,
 )
 from .pagination import DefaultPagination
@@ -53,6 +54,7 @@ from .serializers import (
     CartSerializer,
     CategorySerializer,
     CreateOrderSerializer,
+    CreateProductSerializer,
     # CreateUserSerializer,
     CustomerSerializer,
     OrderSerializer,
@@ -70,12 +72,64 @@ class ProductViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
     pagination_class = DefaultPagination
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsArtisanOrReadOnly]
     search_fields = ["title", "description"]
     ordering_fields = ["unit_price", "last_update"]
 
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateProductSerializer
+        return ProductSerializer
+
     def get_serializer_context(self):
         return {"request": self.request}
+
+    def create(self, request, *args, **kwargs):
+        try:
+            # Get artisan for current user
+            artisan = Artisan.objects.get(user=self.request.user)
+        except Artisan.DoesNotExist:
+            return Response(
+                {"error": "User is not registered as an artisan."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Prepare data for serializer
+        data = (
+            request.data.copy() if hasattr(request.data, "copy") else dict(request.data)
+        )
+
+        # Map 'price' to 'unit_price' if needed
+        if "price" in data and "unit_price" not in data:
+            data["unit_price"] = data.pop("price")
+
+        # Lookup category
+        category_title = data.get("category")
+        if not category_title:
+            return Response(
+                {"error": "Category is required."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            category = Category.objects.get(title=category_title)
+        except Category.DoesNotExist:
+            return Response(
+                {"error": f"Category '{category_title}' not found."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Create product
+        data["category"] = category.id
+        data["artisan"] = artisan.id
+
+        # Use CreateProductSerializer for validation and creation
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        product = serializer.save()
+
+        # Return response using ProductSerializer for consistent output format
+        response_serializer = ProductSerializer(product, context={"request": request})
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         if OrderItem.objects.filter(product_id=kwargs["pk"]).count() > 0:
@@ -192,7 +246,17 @@ class OrderViewSet(ModelViewSet):
         user = self.request.user
 
         if user.is_staff:
+            print("hm")
             return Order.objects.all()
+        elif self.request.query_params.get("role").lower() == "artisan":
+            print(user.artisan.id)
+            orders = list(
+                Order.objects.filter(items__product__artisan=user.artisan)
+                .distinct()
+                .all()
+            )
+            print(orders)
+            return orders
 
         customer_id = Customer.objects.only("id").get(user_id=user.id)
         return Order.objects.filter(customer_id=customer_id)
@@ -239,7 +303,7 @@ class SignupView(APIView):
             user.first_name = request.data.get("firstName")
             user.last_name = request.data.get("lastName")
             user.email = request.data.get("email")
-            user.password = request.data.get("password")
+            user.set_password(request.data.get("password"))
             user.phone_no = request.data.get("phone")
             user.save()
             address = Address()
@@ -250,9 +314,6 @@ class SignupView(APIView):
             address.user = user
             address.save()
             userRole = request.data.get("userRole")
-            login(
-                user,
-            )
             if userRole == "artisan":
                 artisan = Artisan()
                 print(request.data.get("craftSpecialty"))
@@ -314,5 +375,6 @@ def get_dashboard_stats(request):
         change["ai_verified"] = stats["ai_verified"] - old_stats["ai_verified"]
         change["products_count"] = stats["products_count"] - old_stats["products_count"]
         change["total_sales"] = stats["total_sales"] - old_stats["total_sales"]
+        print(stats, change)
         return Response({"stats": stats, "change": change})
     return Response("You are not an Artisan!")

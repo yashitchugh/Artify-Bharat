@@ -1,8 +1,9 @@
 import axios from "axios";
+import api from "./axiosConfig";
 
 export async function getProductsList() {
     try {
-        const response = await axios.get('http://localhost:8000/store/products/');
+        const response = await api.get('store/products/');
         
         // Check for successful status and ensure data.results exists
         if (response.status === 200 && Array.isArray(response.data.results)) {
@@ -25,7 +26,35 @@ export async function getProductsList() {
 
 
 export async function getDashboardStats() {
-    const response = await axios.get('http://localhost:8000/store/stats/');
-    stats = respponse.data['stats']; 
-    change = response.data['change'];
-}   
+
+    const response = await api.get('store/stats/');
+    return {
+        'stats': response.data['stats'],
+        'change': response.data['change'],
+    }
+}
+
+export async function getOrders() {
+    const response = await api.get('store/orders',{
+        params:
+    {
+        'role': 'artisan'
+    } 
+})
+    console.log(response.data)
+    return response.data
+    
+}
+
+export async function createProduct(formData) {
+    console.log(formData);
+    const response = await api.post('/store/products/',formData)
+    if (response.status === 200){
+        console.log('Product added succesfully!!');
+        return 1;
+    }
+    else{
+        Promise.reject()    
+        return 0;
+    }
+}

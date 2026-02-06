@@ -12,7 +12,6 @@ class UserAdmin(BaseUserAdmin):
             {
                 "classes": ("wide",),
                 "fields": (
-                    "username",
                     "password1",
                     "password2",
                     "email",
@@ -22,3 +21,4 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     )
+    ordering = []

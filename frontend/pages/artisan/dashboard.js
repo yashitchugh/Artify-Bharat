@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { createProduct, getDashboardStats } from "@/utils/apiCalls";
 
 /* ================= DASHBOARD ================= */
 
 export default function ArtisanDashboard() {
   const router = useRouter();
-  const data = [];
+  const [data,setData] = useState({});
+  const [change,setChange] = useState({});
   const [artisanData] = useState({
-    name: "Rajesh Kumar",
+    title: "Rajesh Kumar",
     profileImage: null,
     city: "Jaipur",
     state: "Rajasthan",
@@ -20,38 +22,55 @@ export default function ArtisanDashboard() {
 
   const [products, setProducts] = useState([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
+   
+  useEffect(() => {
+  // Define the async function inside
+  const fetchStats = async () => {
+    try {
+      const response = await getDashboardStats();
+      // Ensure response has the expected structure
+      if (response) {
+        setData(response.data || {});
+        setChange(response.change || {});
+      }
+    } catch (error) {
+      console.error("Failed to fetch stats:", error);
+    }
+  };
 
-  useEffect(() => {});
+  fetchStats();
+}, []);
+  console.log(data,change);
   const stats = [
     {
       title: "Total Products",
-      value: "24",
+      value: data['products_count'],
       icon: "🎨",
-      change: "+3 this week",
+      change: change['products_count'],
       changeType: "positive",
       bgGradient: "from-blue-500 to-blue-600",
     },
     {
       title: "Total Sales",
-      value: "₹45,280",
+      value: data['total_sales'],
       icon: "💰",
-      change: "+12% this month",
+      change: change['total_sales'],
       changeType: "positive",
       bgGradient: "from-emerald-500 to-emerald-600",
     },
     {
       title: "Active Orders",
-      value: "8",
+      value: data['active_orders'],
       icon: "📦",
-      change: "2 pending",
+      change: change['active_orders'],
       changeType: "neutral",
       bgGradient: "from-orange-500 to-orange-600",
     },
     {
       title: "AI Verified",
-      value: "18",
+      value: data['ai_verified'],
       icon: "✓",
-      change: "75% of products",
+      change: change['ai_verified'],
       changeType: "positive",
       bgGradient: "from-purple-500 to-purple-600",
     },
@@ -92,7 +111,7 @@ export default function ArtisanDashboard() {
                   ) : (
                     <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#c2794d] to-[#8b6f47] flex items-center justify-center border-4 shadow-md">
                       <span className="text-3xl text-white font-bold">
-                        {artisanData.name.charAt(0)}
+                        {artisanData.title.charAt(0)}
                       </span>
                     </div>
                   )}
@@ -250,15 +269,15 @@ function ActivityItem({ title, time }) {
 
 function AddProductModal({ onClose }) {
   const [formData, setFormData] = useState({
-    name: "",
+    title: "",
     description: "",
-    price: "",
+    unit_price: 0,
     category: "",
-    inventory: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    createProduct(formData);
     console.log(formData);
     onClose();
   };
@@ -272,8 +291,8 @@ function AddProductModal({ onClose }) {
           <input
             className="w-full p-3 border rounded-xl"
             placeholder="Product name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           />
 
           <textarea
@@ -289,18 +308,18 @@ function AddProductModal({ onClose }) {
             <input
               className="p-3 border rounded-xl"
               placeholder="Price"
-              value={formData.price}
+              value={formData.unit_price}
               onChange={(e) =>
-                setFormData({ ...formData, price: e.target.value })
+                setFormData({ ...formData, unit_price: e.target.value })
               }
             />
 
             <input
               className="p-3 border rounded-xl"
-              placeholder="Stock"
-              value={formData.inventory}
+              placeholder="Category"
+              value={formData.category}
               onChange={(e) =>
-                setFormData({ ...formData, inventory: e.target.value })
+                setFormData({ ...formData, category: e.target.value })
               }
             />
           </div>
