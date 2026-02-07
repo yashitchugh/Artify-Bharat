@@ -27,10 +27,10 @@ async def create_story(product: str, request: Request):
 
 @app.post("/transcribe")
 async def transcribe(request: Request, file: UploadFile = File(...)):
-    audio_bytes = file.read()
+    audio_bytes = await file.read()
     try:
-        transcription = get_transcription(audio_bytes)
-
+        transcription = get_transcription(audio_bytes)  
+        print(transcription)
     except RuntimeError:
         return {"error": "Couldn't transcribe the audio!!"}
     return {"text": transcription}
