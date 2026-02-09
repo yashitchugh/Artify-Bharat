@@ -6,10 +6,10 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
-from langchain_community.tools import DuckDuckGoSearchRun
 from dotenv import load_dotenv
 import os
 from psycopg_pool import ConnectionPool
+from utils.tools import tools
 
 load_dotenv()
 
@@ -22,12 +22,7 @@ llm = ChatGoogleGenerativeAI(api_key=os.getenv("GOOGLE_API_KEY"))
 # 2. Tools
 # -------------------
 # Tools
-search_tool = DuckDuckGoSearchRun(region="us-en")
 
-
-tools = [
-    search_tool,
-]
 llm_with_tools = llm.bind_tools(tools)
 
 
@@ -72,13 +67,3 @@ graph.add_conditional_edges("chat_node", tools_condition)
 graph.add_edge("tools", "chat_node")
 
 chatbot = graph.compile(checkpointer=checkpointer)
-
-
-# -------------------
-# 7. Helper
-# -------------------
-def retrieve_all_threads():
-    all_threads = set()
-    for checkpoint in checkpointer.list(None):
-        all_threads.add(checkpoint.config["configurable"]["thread_id"])
-    return list(all_threads)
