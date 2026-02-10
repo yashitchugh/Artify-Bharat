@@ -11,10 +11,11 @@ export async function login(formData){
         localStorage.setItem('access_token', response.data.access);
         localStorage.setItem('refresh_token', response.data.refresh);
         console.log('Logged In Successfully!!')
+        return response.data.user_type;
     }
     else{
         console.log('Invalid Credentials!!')
-        
+        return 0;
     }
 }
 
