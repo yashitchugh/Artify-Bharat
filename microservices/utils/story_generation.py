@@ -10,7 +10,7 @@ load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
 
 
-client = ChatGoogleGenerativeAI(model="gemini-2.5-flash", api_key=api_key)
+client = ChatGoogleGenerativeAI(model="gemini-flash-latest", api_key=api_key)
 product_prompt = PromptTemplate(
     template="Share some historical background about {product_name} such that the reader feels like they should buy one. in about 120 words",
     input_variables=["product_name"],
