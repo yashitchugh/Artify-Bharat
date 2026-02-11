@@ -377,4 +377,4 @@ def get_dashboard_stats(request):
         change["total_sales"] = stats["total_sales"] - old_stats["total_sales"]
         print(stats, change)
         return Response({"stats": stats, "change": change})
-    return Response("You are not an Artisan!")
+    return ValidationError("You are not an Artisan!",status.HTTP_401_UNAUTHORIZED)
