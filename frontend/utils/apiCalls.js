@@ -1,4 +1,3 @@
-import axios from "axios";
 import api from "./axiosConfig";
 
 export async function getProductsList() {
@@ -35,7 +34,7 @@ export async function getDashboardStats() {
 }
 
 export async function getOrders() {
-    const response = await api.get('store/orders',{
+    const response = await api.get('store/orders/',{
         params:
     {
         'role': 'artisan'

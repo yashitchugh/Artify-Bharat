@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { createProduct, getDashboardStats } from "@/utils/apiCalls";
 
@@ -7,8 +6,8 @@ import { createProduct, getDashboardStats } from "@/utils/apiCalls";
 
 export default function ArtisanDashboard() {
   const router = useRouter();
-  const [data,setData] = useState({});
-  const [change,setChange] = useState({});
+  const [data, setData] = useState({});
+  const [change, setChange] = useState({});
   const [artisanData] = useState({
     title: "Rajesh Kumar",
     profileImage: null,
@@ -22,55 +21,55 @@ export default function ArtisanDashboard() {
 
   const [products, setProducts] = useState([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
-   
-  useEffect(() => {
-  // Define the async function inside
-  const fetchStats = async () => {
-    try {
-      const response = await getDashboardStats();
-      // Ensure response has the expected structure
-      if (response) {
-        setData(response.data || {});
-        setChange(response.change || {});
-      }
-    } catch (error) {
-      console.error("Failed to fetch stats:", error);
-    }
-  };
 
-  fetchStats();
-}, []);
-  console.log(data,change);
+  useEffect(() => {
+    // Define the async function inside
+    const fetchStats = async () => {
+      try {
+        const response = await getDashboardStats();
+        // Ensure response has the expected structure
+        if (response) {
+          setData(response.data || {});
+          setChange(response.change || {});
+        }
+      } catch (error) {
+        console.error("Failed to fetch stats:", error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+  console.log(data, change);
   const stats = [
     {
       title: "Total Products",
-      value: data['products_count'],
+      value: data["products_count"],
       icon: "🎨",
-      change: change['products_count'],
+      change: change["products_count"],
       changeType: "positive",
       bgGradient: "from-blue-500 to-blue-600",
     },
     {
       title: "Total Sales",
-      value: data['total_sales'],
+      value: data["total_sales"],
       icon: "💰",
-      change: change['total_sales'],
+      change: change["total_sales"],
       changeType: "positive",
       bgGradient: "from-emerald-500 to-emerald-600",
     },
     {
       title: "Active Orders",
-      value: data['active_orders'],
+      value: data["active_orders"],
       icon: "📦",
-      change: change['active_orders'],
+      change: change["active_orders"],
       changeType: "neutral",
       bgGradient: "from-orange-500 to-orange-600",
     },
     {
       title: "AI Verified",
-      value: data['ai_verified'],
+      value: data["ai_verified"],
       icon: "✓",
-      change: change['ai_verified'],
+      change: change["ai_verified"],
       changeType: "positive",
       bgGradient: "from-purple-500 to-purple-600",
     },
@@ -150,7 +149,8 @@ export default function ArtisanDashboard() {
           </div>
 
           {/* CENTER COLUMN — STATS + PRODUCTS */}
-          <div className="
+          <div
+            className="
               lg:col-span-6 space-y-8
               min-h-[50px]
               max-h-[750px]
@@ -292,7 +292,9 @@ function AddProductModal({ onClose }) {
             className="w-full p-3 border rounded-xl"
             placeholder="Product name"
             value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
           />
 
           <textarea
