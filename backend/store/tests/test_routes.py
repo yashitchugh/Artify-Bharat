@@ -80,24 +80,14 @@ class TestLogin:
 
 @pytest.mark.django_db
 class TestProducts:
-    pass
+    def test_get_products_as_artisan(self, api_client, authenticated_artisan):
+        pass
 
 
 @pytest.mark.django_db
 class TestDashboardStats:
-    def test_get_stats_returns_200(self, api_client, artisan_user):
-        email = os.getenv("ARTISAN_EMAIL")
-        password = os.getenv("ARTISAN_PASS")
-        response: Response = api_client.post(
-            "/api/token/",
-            {"email": email, "password": str(password)},
-            content_type="application/json",
-        )
-        print(email, password)
-        print(response.status_code)
-        assert response.status_code == status.HTTP_200_OK
-        assert response.data["user_type"] == "artisan"
-        access_token = response.data["access"]
+    def test_get_stats_returns_200(self, api_client, authenticated_artisan):
+        access_token = authenticated_artisan.data["access"]
         response = api_client.get(
             "/store/stats/",
             headers={
@@ -106,19 +96,8 @@ class TestDashboardStats:
         )
         assert response.status_code == status.HTTP_200_OK
 
-    def test_get_stats_returns_403(self, api_client, customer_user):
-        email = os.getenv("BUYER_EMAIL")
-        password = os.getenv("BUYER_PASS")
-
-        response: Response = api_client.post(
-            "/api/token/",
-            {"email": email, "password": password},
-            content_type="application/json",
-        )
-
-        assert response.status_code == status.HTTP_200_OK
-        assert response.data["user_type"] == "buyer"
-        access_token = response.data["access"]
+    def test_get_stats_returns_403(self, api_client, authenticated_customer):
+        access_token = authenticated_customer.data["access"]
         response = api_client.get(
             "/store/stats/",
             headers={

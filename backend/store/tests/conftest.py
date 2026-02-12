@@ -1,4 +1,6 @@
 from rest_framework.test import APIClient
+from rest_framework.response import Response
+from rest_framework import status
 from django.contrib.auth import get_user_model
 import pytest
 from store.models import Artisan, Customer
@@ -56,3 +58,31 @@ def customer_user(db):
         user=user,
     )
     return user
+
+
+@pytest.fixture
+def authenticated_artisan(db, api_client, artisan_user):
+    email = os.getenv("ARTISAN_EMAIL")
+    password = os.getenv("ARTISAN_PASS")
+    response: Response = api_client.post(
+        "/api/token/",
+        {"email": email, "password": str(password)},
+        content_type="application/json",
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["user_type"] == "artisan"
+    return response
+
+
+@pytest.fixture
+def authenticated_customer(db, api_client, customer_user):
+    email = os.getenv("BUYER_EMAIL")
+    password = os.getenv("BUYER_PASS")
+    response: Response = api_client.post(
+        "/api/token/",
+        {"email": email, "password": str(password)},
+        content_type="application/json",
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["user_type"] == "buyer"
+    return response
