@@ -168,4 +168,22 @@ class TestDashboardStats:
 
 @pytest.mark.django_db
 class TestOrders:
-    pass
+    def test_get_orders_as_artisan(self, api_client, authenticated_artisan):
+        access_token = authenticated_artisan.data["access"]
+        response = api_client.get(
+            "/store/orders/",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+            },
+        )
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_get_orders_as_customer(self, api_client, authenticated_customer):
+        access_token = authenticated_customer.data["access"]
+        response = api_client.get(
+            "/store/orders/",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+            },
+        )
+        assert response.status_code == status.HTTP_200_OK

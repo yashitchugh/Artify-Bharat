@@ -19,7 +19,11 @@ from rest_framework.permissions import (
     IsAdminUser,
     IsAuthenticated,
 )
-from rest_framework.exceptions import ValidationError,PermissionDenied,NotAuthenticated
+from rest_framework.exceptions import (
+    ValidationError,
+    PermissionDenied,
+    NotAuthenticated,
+)
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.decorators import api_view
@@ -248,14 +252,12 @@ class OrderViewSet(ModelViewSet):
         if user.is_staff:
             print("hm")
             return Order.objects.all()
-        elif self.request.query_params.get("role").lower() == "artisan":
-            print(user.artisan.id)
+        elif self.request.user and Artisan.objects.filter(user=self.request.user):
             orders = list(
                 Order.objects.filter(items__product__artisan=user.artisan)
                 .distinct()
                 .all()
             )
-            print(orders)
             return orders
 
         customer_id = Customer.objects.only("id").get(user_id=user.id)
@@ -345,11 +347,11 @@ class SignupView(APIView):
 @api_view(http_method_names=["GET"])
 def get_dashboard_stats(request):
     if not request.user.is_authenticated:
-        raise NotAuthenticated() # Returns 401
+        raise NotAuthenticated()  # Returns 401
 
     if not Artisan.objects.filter(user=request.user).exists():
-        raise PermissionDenied("You are not an Artisan!") # Returns 403
-    
+        raise PermissionDenied("You are not an Artisan!")  # Returns 403
+
     artisan: Artisan = request.user.artisan
     stats: DashboardStats = DashboardStats()
     # Product count
@@ -380,4 +382,3 @@ def get_dashboard_stats(request):
     change["total_sales"] = stats["total_sales"] - old_stats["total_sales"]
     print(stats, change)
     return Response({"stats": stats, "change": change})
-    
