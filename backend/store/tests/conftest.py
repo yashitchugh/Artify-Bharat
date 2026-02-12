@@ -1,6 +1,14 @@
-from django.contrib.auth.models import User
 from rest_framework.test import APIClient
+from django.contrib.auth import get_user_model
 import pytest
+from store.models import Artisan
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+User = get_user_model()
 
 
 @pytest.fixture
@@ -12,4 +20,23 @@ def api_client():
 def authenticate(api_client):
     def do_authenticate(is_staff=False):
         return api_client.force_authenticate(user=User(is_staff=is_staff))
+
     return do_authenticate
+
+
+@pytest.fixture
+def artisan_user(db):
+    """Creates a test artisan user in the test database."""
+    user = User()
+    user.first_name = "Test"
+    user.last_name = "Artisan"
+    user.email = os.getenv("ARTISAN_EMAIL")
+    user.set_password(os.getenv("ARTISAN_PASS"))
+    user.save()
+
+    Artisan.objects.create(
+        user=user,
+        speciality="pottery",
+        experience=1,
+    )
+    return user

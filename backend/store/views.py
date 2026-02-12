@@ -323,12 +323,12 @@ class SignupView(APIView):
                 artisan.user_id = user.id
                 artisan.save()
             elif userRole == "buyer":
-                customer = Customer()
+                customer, created = Customer.objects.get_or_create(user=user)
                 customer.user = user
                 customer.interests = list(request.data.get("interests"))
                 customer.save()
             else:
-                return ValidationError("Client Side Error!!")
+                raise ValidationError("Client Side Error!!")
         refresh = RefreshToken.for_user(user)
 
         return Response(
@@ -336,7 +336,8 @@ class SignupView(APIView):
                 "message": "Success",
                 "access": str(refresh.access_token),
                 "refresh": str(refresh),
-            }
+            },
+            status=status.HTTP_201_CREATED,
         )
         # return Response("Account Created Successfully!!")
 
@@ -377,4 +378,4 @@ def get_dashboard_stats(request):
         change["total_sales"] = stats["total_sales"] - old_stats["total_sales"]
         print(stats, change)
         return Response({"stats": stats, "change": change})
-    return ValidationError("You are not an Artisan!",status.HTTP_401_UNAUTHORIZED)
+    raise ValidationError("You are not an Artisan!", status.HTTP_401_UNAUTHORIZED)
