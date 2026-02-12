@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model
 import pytest
-from store.models import Artisan, Customer
+from store.models import Artisan, Category, Customer
 import os
 from dotenv import load_dotenv
 
@@ -86,3 +86,7 @@ def authenticated_customer(db, api_client, customer_user):
     assert response.status_code == status.HTTP_200_OK
     assert response.data["user_type"] == "buyer"
     return response
+
+@pytest.fixture
+def sample_category(db):
+    return Category.objects.create(title='pottery')

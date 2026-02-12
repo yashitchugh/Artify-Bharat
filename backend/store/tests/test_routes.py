@@ -81,7 +81,60 @@ class TestLogin:
 @pytest.mark.django_db
 class TestProducts:
     def test_get_products_as_artisan(self, api_client, authenticated_artisan):
-        pass
+        access_token = authenticated_artisan.data["access"]
+        response = api_client.get(
+            "/store/products/",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+            },
+        )
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_get_products_as_customer(self, api_client, authenticated_customer):
+        access_token = authenticated_customer.data["access"]
+        response = api_client.get(
+            "/store/products/",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+            },
+        )
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_create_product_as_artisan(
+        self, api_client, authenticated_artisan, sample_category
+    ):
+        access_token = authenticated_artisan.data["access"]
+        response = api_client.post(
+            "/store/products/",
+            {
+                "title": fake.name(),
+                "description": fake.text(max_nb_chars=30),
+                "unit_price": 40,
+                "category": "pottery",
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+            },
+        )
+        assert response.status_code == status.HTTP_201_CREATED
+
+    def test_create_product_as_customer(
+        self, api_client, authenticated_customer, sample_category
+    ):
+        access_token = authenticated_customer.data["access"]
+        response = api_client.post(
+            "/store/products/",
+            {
+                "title": fake.name(),
+                "description": fake.text(max_nb_chars=30),
+                "unit_price": 40,
+                "category": "pottery",
+            },
+            headers={
+                "Authorization": f"Bearer {access_token}",
+            },
+        )
+        assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 @pytest.mark.django_db
