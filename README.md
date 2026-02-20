@@ -417,6 +417,12 @@ GOOGLE_API_KEY=your_google_gemini_api_key
 ASSEMBLYAI_API_KEY=your_assemblyai_api_key
 ```
 
+### Screenshots
+<img width="814" height="463" alt="image" src="https://github.com/user-attachments/assets/f6aebb30-c5fe-46fe-b268-579c37494d4b" />
+<img width="866" height="486" alt="image" src="https://github.com/user-attachments/assets/cd884940-efc8-43f5-b6f0-aaabe13ffd08" />
+<img width="898" height="457" alt="image" src="https://github.com/user-attachments/assets/e6b6a395-c7d6-41b9-b426-2256a69697ff" />
+
+
 ---
 
 ## 🗺️ Key Pages
