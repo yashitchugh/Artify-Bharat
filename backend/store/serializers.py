@@ -78,6 +78,17 @@ class CreateProductSerializer(serializers.ModelSerializer):
         ]
 
 
+class ProductNameSerializer(serializers.ModelSerializer):
+    lowered_title = serializers.SerializerMethodField(method_name="get_lowered_title")
+
+    def get_lowered_title(self, product: Product):
+        return str(product.title).lower()
+
+    class Meta:
+        model = Product
+        fields = ["lowered_title"]
+
+
 # class ReviewSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Review
