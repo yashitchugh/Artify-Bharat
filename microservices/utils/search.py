@@ -1,3 +1,4 @@
+from csv import writer
 import os
 import requests
 from whoosh import fields
@@ -31,4 +32,14 @@ def index_product_names(token):
         return 
     for product in data:
         index = get_index()
-        pass
+        writer = index.writer()
+        writer.add_document(product=product)
+        writer.commit()
+        return data
+    
+
+    def search_product(query):
+        index = get_index()
+        with index.searcher() as searcher:
+            results = searcher.find("product", query)
+            return [result['product'] for result in results]
