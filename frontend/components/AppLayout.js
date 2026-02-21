@@ -35,13 +35,54 @@ export default function AppLayout({ children, currentPage }) {
               </div>
             </div>
 
-            {/* CTA Button */}
-            <button className="hidden md:flex items-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-[#c2794d] to-[#8b6f47] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
-              <span>✓</span>
-              <span>Verify Product</span>
-            </button>
+            {/* Right Side Actions */}
+            <div className="flex items-center space-x-4">
+              {/* Verify Product Button */}
+              <button className="hidden md:flex items-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-[#c2794d] to-[#8b6f47] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300">
+                <span>✓</span>
+                <span>Verify Product</span>
+              </button>
 
-            {/* Mobile Menu Toggle - Removed */}
+              {/* Profile Dropdown */}
+              <div className="relative group">
+                <button className="flex items-center space-x-2 px-4 py-2 bg-white border-2 border-[#d4c5b0]/50 rounded-xl hover:border-[#c2794d] transition-all">
+                  <div className="w-8 h-8 bg-gradient-to-br from-[#c2794d] to-[#8b6f47] rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm">👤</span>
+                  </div>
+                  <span className="hidden md:block text-sm font-medium text-[#3d3021]">Profile</span>
+                  <span className="text-[#6d5a3d]">▼</span>
+                </button>
+
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 mt-2 w-48 bg-white border-2 border-[#d4c5b0]/50 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <div className="py-2">
+                    <Link href="/buyer/profile" className="block px-4 py-2 text-sm text-[#3d3021] hover:bg-[#f8f6f3] transition-colors">
+                      👤 My Profile
+                    </Link>
+                    <Link href="/buyer/orders" className="block px-4 py-2 text-sm text-[#3d3021] hover:bg-[#f8f6f3] transition-colors">
+                      📦 My Orders
+                    </Link>
+                    <Link href="/buyer/wishlist" className="block px-4 py-2 text-sm text-[#3d3021] hover:bg-[#f8f6f3] transition-colors">
+                      ❤️ Wishlist
+                    </Link>
+                    <hr className="my-2 border-[#d4c5b0]/40" />
+                    <Link href="/artisan/dashboard" className="block px-4 py-2 text-sm text-[#3d3021] hover:bg-[#f8f6f3] transition-colors">
+                      🎨 Artisan Dashboard
+                    </Link>
+                    <hr className="my-2 border-[#d4c5b0]/40" />
+                    <button
+                      onClick={() => {
+                        localStorage.clear()
+                        window.location.href = '/login/login'
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      🚪 Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </header>
