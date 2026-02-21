@@ -30,27 +30,18 @@ export async function getProductsList() {
 }
 // getProductsList();
 
-
-
 export async function getDashboardStats() {
-
-    const response = await api.get('store/stats/');
-    return {
-        'stats': response.data['stats'],
-        'change': response.data['change'],
-    }
+  const response = await api.get("store/stats/");
+  return {
+    stats: response.data["stats"],
+    change: response.data["change"],
+  };
 }
 
 export async function getOrders() {
-    const response = await api.get('store/orders', {
-        params:
-        {
-            'role': 'artisan'
-        }
-    })
-    console.log(response.data)
-    return response.data
-
+  const response = await api.get("store/orders/");
+  console.log(response.data);
+  return response.data;
 }
 
 export async function createProduct(formData) {
