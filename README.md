@@ -1,3 +1,33 @@
+# Artify Bharat - AI-Powered Verified Handmade Marketplace
+
+A Next.js application that empowers Indian artisans through AI-driven voice onboarding, multilingual storytelling, and authenticity verification.
+
+## Features
+
+- 🎯 **Voice Onboarding**: Native language voice recording for artisans
+- 🤖 **AI Authenticity Verification**: 94% accuracy in detecting handmade products
+- 🌍 **Multilingual Support**: AI-generated stories in 7+ languages
+- 📜 **Digital Craft Passport**: Blockchain-verified authenticity certificates
+- 💰 **Fair AI Pricing**: ML-powered price recommendations
+- 📊 **Admin Dashboard**: Review queue for product approvals
+- 🛍️ **Marketplace**: Browse and purchase authentic handmade products
+- 🔐 **OAuth Authentication**: Login with Google and Facebook
+
+## Tech Stack
+
+### Frontend
+- **Framework**: Next.js 14
+- **Styling**: Tailwind CSS
+- **Language**: JavaScript
+- **Fonts**: Inter, Poppins, Noto Sans Devanagari
+
+### Backend
+- **Framework**: Django 6.0
+- **API**: Django REST Framework
+- **Authentication**: JWT + OAuth (Google, Facebook)
+- **Database**: SQLite (development) / PostgreSQL (production)
+
+## Getting Started
 <div align="center">
 
 <h1>🪔 Artify Bharat</h1>

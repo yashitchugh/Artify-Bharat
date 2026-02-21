@@ -1,4 +1,3 @@
-from csv import writer
 import os
 import requests
 from whoosh import fields
