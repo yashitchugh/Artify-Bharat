@@ -1,3 +1,5 @@
+from tkinter.font import names
+from django.db.models.functions import Lower
 from django.db.models.aggregates import Count
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.db.transaction import atomic
@@ -66,6 +68,7 @@ from .serializers import (
     CustomerSerializer,
     OrderSerializer,
     ProductAssetSerializer,
+    ProductNameSerializer,
     ProductSerializer,
     # ReviewSerializer,
     UpdateCartItemSerializer,
@@ -176,6 +179,19 @@ class ProductViewSet(ModelViewSet):
             )
 
         return super().destroy(request, *args, **kwargs)
+
+    @action(detail=False, methods=["GET"])
+    def titles(self, request, *args, **kwargs):
+        queryset = (
+            Product.objects.annotate(lowered_title=Lower("title"))
+            .only("lowered_title")
+            .all()
+        )
+        print(queryset)
+
+        serializer = ProductNameSerializer(queryset, many=True)
+
+        return Response(serializer.data)
 
 
 class CategoryViewSet(ModelViewSet):

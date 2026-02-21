@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models.functions import Lower
+from django.db.models.indexes import Index
 from uuid import uuid4
 from store.validators import validate_file_size, validate_model_extension
 
@@ -59,6 +61,7 @@ class Product(models.Model):
 
     class Meta:
         ordering = ["title"]
+        indexes = [Index(Lower("title"), name="title_idx")]
 
 
 class ProductAsset(models.Model):
