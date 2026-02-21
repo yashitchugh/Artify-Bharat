@@ -120,23 +120,22 @@ export default function Signup() {
   //       if (res.ok) {
   //         alert("Account created successfully!");
 
-  const handleSubmit = async (e) => { // 1. Added async here
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form submitted:', { ...formData, role: userRole });
 
     try {
-      // 2. Await the async signup function directly (Removed useEffect)
       await signup(formData, userRole);
 
-      // 3. Redirect based on the role
+      // Redirect based on the role
       if (userRole === "artisan") {
         router.push("/artisan/onboard");
       } else {
-        router.push("/buyer/marketplace");
+        // Buyer ko profile page pe bhejo with edit mode
+        router.push("/buyer/profile?welcome=true");
       }
     } catch (error) {
       console.error("Signup Error:", error);
-      // This is where your 'Axios Network Error' will be caught if the backend is down
       alert("Registration failed. Please check if the server is online.");
     }
   };
