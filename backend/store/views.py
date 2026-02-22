@@ -116,6 +116,14 @@ class ProductViewSet(ModelViewSet):
                 f"🌍 Showing ALL products (user: {self.request.user.email if self.request.user.is_authenticated else 'Anonymous'})"
             )
 
+        # Filter by artisan ID if provided (for buyer browsing specific artisan's products)
+        artisan_id = self.request.query_params.get("artisan_id")
+        if artisan_id:
+            print(f"🔍 Filtering by artisan ID: {artisan_id}")
+            queryset = queryset.filter(artisan_id=artisan_id)
+
+        return queryset
+
         return queryset
 
     def create(self, request, *args, **kwargs):

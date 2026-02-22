@@ -93,6 +93,7 @@ class ProductAssetSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductAssetSerializer(many=True, read_only=True)
     artisan = serializers.SerializerMethodField(method_name="get_artisan")
+    artisan_id = serializers.SerializerMethodField(method_name="get_artisan_id")
     price = serializers.SerializerMethodField(method_name="get_price")
     category = serializers.SerializerMethodField(method_name="get_category_title")
     image_url = serializers.SerializerMethodField()
@@ -111,6 +112,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "category",
             "images",
             "artisan",
+            "artisan_id",
             "image_url",
             "video_url",
         ]
@@ -123,6 +125,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_artisan(self, product: Product):
         return f"{product.artisan.user.first_name} {product.artisan.user.last_name}"
+
+    def get_artisan_id(self, product: Product):
+        return product.artisan.id
 
     def get_image_url(self, product: Product):
         if product.image:
