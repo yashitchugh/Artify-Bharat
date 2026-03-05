@@ -37,6 +37,8 @@ next-env.d.ts
 __pycache__/
 */__pycache__/
 */.python-version
+.pytest_cache/
+*/.pytest_cache/
 
 
 # Virtual Environment
