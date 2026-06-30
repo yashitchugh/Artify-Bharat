@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { createProduct, getDashboardStats, getArtisanProfile, getProductsList, deleteProduct } from "@/utils/apiCalls";
+import {
+  createProduct,
+  getDashboardStats,
+  getArtisanProfile,
+  getProductsList,
+  deleteProduct,
+} from "@/utils/apiCalls";
 import ProtectedRoute from "@/utils/ProtectedRoute";
 import api from "@/utils/axiosConfig";
 import ArtifyLogo from "../../components/ArtifyLogo";
@@ -23,22 +29,22 @@ function DashboardContent() {
 
   // Check for verification success message
   useEffect(() => {
-    if (router.query.verification === 'submitted') {
+    if (router.query.verification === "submitted") {
       setShowVerificationSuccess(true);
       // Clear the query parameter
-      router.replace('/artisan/dashboard', undefined, { shallow: true });
+      router.replace("/artisan/dashboard", undefined, { shallow: true });
     }
   }, [router.query]);
 
   const handleLogout = () => {
-    if (confirm('Are you sure you want to logout?')) {
+    if (confirm("Are you sure you want to logout?")) {
       // Clear all auth data
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      localStorage.removeItem('user_role');
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user_role");
 
       // Redirect to login
-      router.push('/login/login');
+      router.push("/login/login");
     }
   };
   const [artisanData, setArtisanData] = useState({
@@ -122,11 +128,15 @@ function DashboardContent() {
         console.log("Artisan Profile:", profile);
 
         setArtisanData({
-          title: `${profile.user?.first_name || ''} ${profile.user?.last_name || ''}`.trim() || "Artisan",
+          title:
+            `${profile.user?.first_name || ""} ${profile.user?.last_name || ""}`.trim() ||
+            "Artisan",
           profileImage: profile.profile_image_url || null,
           city: profile.user?.address?.city || "City",
           state: profile.user?.address?.state || "State",
-          craftStory: profile.craft_story || "No story recorded yet. Please complete onboarding.",
+          craftStory:
+            profile.craft_story ||
+            "No story recorded yet. Please complete onboarding.",
           speciality: profile.speciality || "Artisan",
           experience: profile.experience || 0,
         });
@@ -139,9 +149,9 @@ function DashboardContent() {
           try {
             const onboardingData = JSON.parse(savedData);
             if (onboardingData.story) {
-              setArtisanData(prev => ({
+              setArtisanData((prev) => ({
                 ...prev,
-                craftStory: onboardingData.story
+                craftStory: onboardingData.story,
               }));
             }
           } catch (e) {
@@ -215,16 +225,32 @@ function DashboardContent() {
 
         {/* Craft Image Backgrounds - Constant and Higher Opacity */}
         <div className="absolute top-16 right-1/3 w-20 h-20 opacity-[0.15] blur-[3px] rotate-12">
-          <img src="/images/img_1ab.jpg" alt="" className="w-full h-full object-cover rounded-2xl" />
+          <img
+            src="/images/img_1ab.jpg"
+            alt=""
+            className="w-full h-full object-cover rounded-2xl"
+          />
         </div>
         <div className="absolute bottom-24 left-1/5 w-16 h-16 opacity-[0.18] blur-[2px] -rotate-8">
-          <img src="/images/img3_ab.jpg" alt="" className="w-full h-full object-cover rounded-2xl" />
+          <img
+            src="/images/img3_ab.jpg"
+            alt=""
+            className="w-full h-full object-cover rounded-2xl"
+          />
         </div>
         <div className="absolute top-1/4 left-1/2 w-14 h-14 opacity-[0.12] blur-[4px] rotate-45">
-          <img src="/images/states/kashmir.jpg" alt="" className="w-full h-full object-cover rounded-xl" />
+          <img
+            src="/images/states/kashmir.jpg"
+            alt=""
+            className="w-full h-full object-cover rounded-xl"
+          />
         </div>
         <div className="absolute bottom-1/3 right-1/6 w-18 h-18 opacity-[0.16] blur-[3px] -rotate-30">
-          <img src="/images/states/rajasthan.jpg" alt="" className="w-full h-full object-cover rounded-xl" />
+          <img
+            src="/images/states/rajasthan.jpg"
+            alt=""
+            className="w-full h-full object-cover rounded-xl"
+          />
         </div>
       </div>
 
@@ -237,8 +263,18 @@ function DashboardContent() {
               <div className="relative p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-green-200 shadow-soft">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg
+                      className="w-6 h-6 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                   </div>
                   <div className="flex-1">
@@ -246,15 +282,27 @@ function DashboardContent() {
                       Product Verification Submitted Successfully! 🎉
                     </h3>
                     <p className="text-green-700 font-friendly">
-                      Your product authenticity verification has been submitted for review. Our team will review your documentation within 3-5 business days.
+                      Your product authenticity verification has been submitted
+                      for review. Our team will review your documentation within
+                      3-5 business days.
                     </p>
                   </div>
                   <button
                     onClick={() => setShowVerificationSuccess(false)}
                     className="text-green-600 hover:text-green-800 transition-colors"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -281,7 +329,8 @@ function DashboardContent() {
                     Artisan Dashboard
                   </h1>
                   <p className="text-lg font-handwritten text-[#6d5a3d] opacity-80">
-                    Welcome back, {artisanData.title}! ✨ Create something beautiful today
+                    Welcome back, {artisanData.title}! ✨ Create something
+                    beautiful today
                   </p>
                 </div>
               </div>
@@ -300,7 +349,7 @@ function DashboardContent() {
                 </div>
 
                 <button
-                  onClick={() => router.push('/buyer/marketplace')}
+                  onClick={() => router.push("/buyer/marketplace")}
                   className="px-6 py-4 bg-white/60 backdrop-blur-sm border border-white/30 text-[#8b6f47] rounded-2xl hover:bg-white/80 transition-all flex items-center gap-2 font-modern"
                 >
                   <span>🏪</span>
@@ -320,7 +369,10 @@ function DashboardContent() {
 
                 {/* Decorative elements */}
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-[#d4af37] to-[#b8860b] rounded-full opacity-60 animate-pulse-slow"></div>
-                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-gradient-to-br from-[#d4784a] to-[#c6633f] rounded-full opacity-40 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+                <div
+                  className="absolute -bottom-2 -left-2 w-6 h-6 bg-gradient-to-br from-[#d4784a] to-[#c6633f] rounded-full opacity-40 animate-pulse-slow"
+                  style={{ animationDelay: "1s" }}
+                ></div>
 
                 <div className="relative p-8 min-h-[600px] flex flex-col">
                   {/* Enhanced Profile Image Section */}
@@ -335,23 +387,29 @@ function DashboardContent() {
                           const file = e.target.files[0];
                           if (file) {
                             const formData = new FormData();
-                            formData.append('profile_image', file);
+                            formData.append("profile_image", file);
 
                             try {
-                              const response = await api.patch('store/artisan/profile/', formData, {
-                                headers: { 'Content-Type': 'multipart/form-data' }
-                              });
+                              const response = await api.patch(
+                                "store/artisan/profile/",
+                                formData,
+                                {
+                                  headers: {
+                                    "Content-Type": "multipart/form-data",
+                                  },
+                                },
+                              );
 
                               if (response.status === 200) {
-                                setArtisanData(prev => ({
+                                setArtisanData((prev) => ({
                                   ...prev,
-                                  profileImage: response.data.profile_image_url
+                                  profileImage: response.data.profile_image_url,
                                 }));
-                                alert('Profile photo updated! ✨');
+                                alert("Profile photo updated! ✨");
                               }
                             } catch (error) {
-                              console.error('Upload failed:', error);
-                              alert('Failed to upload photo');
+                              console.error("Upload failed:", error);
+                              alert("Failed to upload photo");
                             }
                           }
                         }}
@@ -425,7 +483,7 @@ function DashboardContent() {
                       </button>
 
                       <button
-                        onClick={() => router.push('/artisan/verify')}
+                        onClick={() => router.push("/artisan/verify")}
                         className="w-full py-3 bg-gradient-to-r from-[#d4af37] to-[#c2794d] text-white rounded-2xl hover:shadow-lg transition-all font-modern font-semibold flex items-center justify-center gap-2"
                       >
                         <span>🏆</span>
@@ -474,21 +532,30 @@ function DashboardContent() {
                     {stats.map((stat, i) => (
                       <div key={i} className="relative group">
                         {/* Glow effect */}
-                        <div className={`absolute inset-0 bg-gradient-to-br ${stat.bgGradient} rounded-2xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity`}></div>
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-br ${stat.bgGradient} rounded-2xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity`}
+                        ></div>
 
                         <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl border border-white/30 p-5 shadow-soft hover:shadow-warm transition-all group-hover:scale-105">
                           <div className="flex items-center justify-between mb-3">
-                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.bgGradient} flex items-center justify-center text-xl text-white shadow-lg`}>
+                            <div
+                              className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.bgGradient} flex items-center justify-center text-xl text-white shadow-lg`}
+                            >
                               {stat.icon}
                             </div>
                             <div className="text-right">
-                              <p className={`text-xs font-medium ${stat.changeType === "positive" ? "text-green-600" : stat.changeType === "negative" ? "text-red-600" : "text-[#8b6f47]"}`}>
-                                {stat.change > 0 ? '+' : ''}{stat.change}
+                              <p
+                                className={`text-xs font-medium ${stat.changeType === "positive" ? "text-green-600" : stat.changeType === "negative" ? "text-red-600" : "text-[#8b6f47]"}`}
+                              >
+                                {stat.change > 0 ? "+" : ""}
+                                {stat.change}
                               </p>
                             </div>
                           </div>
 
-                          <p className="text-sm font-modern text-[#6d5a3d] mb-1">{stat.title}</p>
+                          <p className="text-sm font-modern text-[#6d5a3d] mb-1">
+                            {stat.title}
+                          </p>
                           <h3 className="text-3xl font-bold font-artistic text-[#3d3021]">
                             {stat.value}
                           </h3>
@@ -525,8 +592,12 @@ function DashboardContent() {
                       <div className="w-24 h-24 bg-gradient-to-br from-[#d4784a]/20 to-[#8b6f47]/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <span className="text-4xl">🎨</span>
                       </div>
-                      <h4 className="text-xl font-artistic font-bold text-[#3d3021] mb-2">No products yet</h4>
-                      <p className="text-[#6d5a3d] font-handwritten mb-6">Start showcasing your beautiful crafts to the world!</p>
+                      <h4 className="text-xl font-artistic font-bold text-[#3d3021] mb-2">
+                        No products yet
+                      </h4>
+                      <p className="text-[#6d5a3d] font-handwritten mb-6">
+                        Start showcasing your beautiful crafts to the world!
+                      </p>
                       <button
                         onClick={() => setShowAddProduct(true)}
                         className="px-8 py-4 bg-gradient-to-r from-[#d4784a] to-[#8b6f47] text-white rounded-2xl hover:shadow-warm transition-all font-modern font-semibold flex items-center gap-2 mx-auto"
@@ -558,7 +629,9 @@ function DashboardContent() {
                                   />
                                   {product.video_url && (
                                     <div className="absolute top-2 right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-                                      <span className="text-white text-xs">▶</span>
+                                      <span className="text-white text-xs">
+                                        ▶
+                                      </span>
                                     </div>
                                   )}
                                 </div>
@@ -604,17 +677,24 @@ function DashboardContent() {
                                   }}
                                   title="Edit Product"
                                 >
-                                  <span className="group-hover/btn:scale-110 transition-transform inline-block">✏️</span>
+                                  <span className="group-hover/btn:scale-110 transition-transform inline-block">
+                                    ✏️
+                                  </span>
                                 </button>
                                 <button
                                   className="p-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors group/btn"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDeleteProduct(product.id, product.title);
+                                    handleDeleteProduct(
+                                      product.id,
+                                      product.title,
+                                    );
                                   }}
                                   title="Delete Product"
                                 >
-                                  <span className="group-hover/btn:scale-110 transition-transform inline-block">🗑️</span>
+                                  <span className="group-hover/btn:scale-110 transition-transform inline-block">
+                                    🗑️
+                                  </span>
                                 </button>
                               </div>
                             </div>
@@ -638,9 +718,21 @@ function DashboardContent() {
                     Performance Insights
                   </h3>
                   <div className="space-y-4">
-                    <EnhancedProgressRow label="Profile Views" percent="75%" color="from-blue-500 to-blue-600" />
-                    <EnhancedProgressRow label="Product Clicks" percent="60%" color="from-green-500 to-green-600" />
-                    <EnhancedProgressRow label="Conversion Rate" percent="45%" color="from-purple-500 to-purple-600" />
+                    <EnhancedProgressRow
+                      label="Profile Views"
+                      percent="75%"
+                      color="from-blue-500 to-blue-600"
+                    />
+                    <EnhancedProgressRow
+                      label="Product Clicks"
+                      percent="60%"
+                      color="from-green-500 to-green-600"
+                    />
+                    <EnhancedProgressRow
+                      label="Conversion Rate"
+                      percent="45%"
+                      color="from-purple-500 to-purple-600"
+                    />
                   </div>
                 </div>
               </div>
@@ -654,10 +746,30 @@ function DashboardContent() {
                     Recent Activity
                   </h3>
                   <div className="space-y-3">
-                    <EnhancedActivityItem icon="📦" title="Order shipped" time="2 hours ago" type="success" />
-                    <EnhancedActivityItem icon="💬" title="New message" time="5 hours ago" type="info" />
-                    <EnhancedActivityItem icon="✅" title="AI Verified product" time="1 day ago" type="success" />
-                    <EnhancedActivityItem icon="👁️" title="Profile viewed" time="3 hours ago" type="neutral" />
+                    <EnhancedActivityItem
+                      icon="📦"
+                      title="Order shipped"
+                      time="2 hours ago"
+                      type="success"
+                    />
+                    <EnhancedActivityItem
+                      icon="💬"
+                      title="New message"
+                      time="5 hours ago"
+                      type="info"
+                    />
+                    <EnhancedActivityItem
+                      icon="✅"
+                      title="AI Verified product"
+                      time="1 day ago"
+                      type="success"
+                    />
+                    <EnhancedActivityItem
+                      icon="👁️"
+                      title="Profile viewed"
+                      time="3 hours ago"
+                      type="neutral"
+                    />
                   </div>
                 </div>
               </div>
@@ -672,7 +784,7 @@ function DashboardContent() {
                   </h3>
                   <div className="space-y-3">
                     <button
-                      onClick={() => router.push('/buyer/marketplace')}
+                      onClick={() => router.push("/buyer/marketplace")}
                       className="w-full p-3 bg-gradient-to-r from-[#d4784a]/20 to-[#8b6f47]/20 hover:from-[#d4784a]/30 hover:to-[#8b6f47]/30 text-[#8b6f47] rounded-xl transition-all font-modern flex items-center gap-2"
                     >
                       <span>🏪</span>
@@ -690,7 +802,6 @@ function DashboardContent() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -725,7 +836,9 @@ function DashboardContent() {
           onUpdate={async () => {
             const profile = await getArtisanProfile();
             setArtisanData({
-              title: `${profile.user?.first_name || ''} ${profile.user?.last_name || ''}`.trim() || "Artisan",
+              title:
+                `${profile.user?.first_name || ""} ${profile.user?.last_name || ""}`.trim() ||
+                "Artisan",
               profileImage: profile.profile_image_url || null,
               city: profile.user?.address?.city || "City",
               state: profile.user?.address?.state || "State",
@@ -786,14 +899,16 @@ function EnhancedProgressRow({ label, percent, color }) {
 
 function EnhancedActivityItem({ icon, title, time, type }) {
   const typeColors = {
-    success: 'from-green-500/20 to-emerald-500/20 text-green-700',
-    info: 'from-blue-500/20 to-cyan-500/20 text-blue-700',
-    neutral: 'from-gray-500/20 to-slate-500/20 text-gray-700',
-    warning: 'from-yellow-500/20 to-orange-500/20 text-yellow-700'
+    success: "from-green-500/20 to-emerald-500/20 text-green-700",
+    info: "from-blue-500/20 to-cyan-500/20 text-blue-700",
+    neutral: "from-gray-500/20 to-slate-500/20 text-gray-700",
+    warning: "from-yellow-500/20 to-orange-500/20 text-yellow-700",
   };
 
   return (
-    <div className={`flex items-center justify-between p-3 bg-gradient-to-r ${typeColors[type] || typeColors.neutral} rounded-xl border border-white/30 backdrop-blur-sm`}>
+    <div
+      className={`flex items-center justify-between p-3 bg-gradient-to-r ${typeColors[type] || typeColors.neutral} rounded-xl border border-white/30 backdrop-blur-sm`}
+    >
       <div className="flex items-center gap-3">
         <span className="text-lg">{icon}</span>
         <span className="font-modern text-sm">{title}</span>
@@ -854,9 +969,9 @@ function AddProductModal({ onClose, onProductAdded }) {
 
   // Disable body scroll when modal is open
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, []);
 
@@ -872,9 +987,9 @@ function AddProductModal({ onClose, onProductAdded }) {
       };
 
       recorder.onstop = async () => {
-        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        const audioBlob = new Blob(chunks, { type: "audio/webm" });
         await processAudioDescription(audioBlob);
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
       };
 
       recorder.start();
@@ -882,8 +997,8 @@ function AddProductModal({ onClose, onProductAdded }) {
       setAudioChunks(chunks);
       setIsRecording(true);
     } catch (error) {
-      console.error('Error accessing microphone:', error);
-      alert('Could not access microphone. Please check permissions.');
+      console.error("Error accessing microphone:", error);
+      alert("Could not access microphone. Please check permissions.");
     }
   };
 
@@ -898,24 +1013,27 @@ function AddProductModal({ onClose, onProductAdded }) {
     setIsProcessing(true);
     try {
       const formData = new FormData();
-      formData.append('file', audioBlob, 'description.webm');
+      formData.append("file", audioBlob, "description.webm");
 
-      const response = await fetch('http://localhost:8001/process_product_description', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetch(
+        "http://localhost:8001/process_product_description",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       const data = await response.json();
 
       if (data.description) {
-        setFormData(prev => ({ ...prev, description: data.description }));
-        alert('Description generated successfully! ✨');
+        setFormData((prev) => ({ ...prev, description: data.description }));
+        alert("Description generated successfully! ✨");
       } else {
-        alert('Failed to generate description. Please try again.');
+        alert("Failed to generate description. Please try again.");
       }
     } catch (error) {
-      console.error('Error processing audio:', error);
-      alert('Failed to process audio. Make sure microservices are running.');
+      console.error("Error processing audio:", error);
+      alert("Failed to process audio. Make sure microservices are running.");
     } finally {
       setIsProcessing(false);
     }
@@ -926,13 +1044,13 @@ function AddProductModal({ onClose, onProductAdded }) {
     if (file) {
       setFormData({ ...formData, [type]: file });
 
-      if (type === 'image') {
+      if (type === "image") {
         const reader = new FileReader();
         reader.onloadend = () => {
           setImagePreview(reader.result);
         };
         reader.readAsDataURL(file);
-      } else if (type === 'video') {
+      } else if (type === "video") {
         setVideoPreview(URL.createObjectURL(file));
       }
     }
@@ -969,16 +1087,16 @@ function AddProductModal({ onClose, onProductAdded }) {
 
     try {
       const data = new FormData();
-      data.append('title', formData.title);
-      data.append('description', formData.description);
-      data.append('unit_price', formData.unit_price);
-      data.append('category', formData.category);
+      data.append("title", formData.title);
+      data.append("description", formData.description);
+      data.append("unit_price", formData.unit_price);
+      data.append("category", formData.category);
 
       if (formData.image) {
-        data.append('image', formData.image);
+        data.append("image", formData.image);
       }
       if (formData.video) {
-        data.append('video', formData.video);
+        data.append("video", formData.video);
       }
 
       if (formData.additionalImages.length > 0) {
@@ -1036,7 +1154,9 @@ function AddProductModal({ onClose, onProductAdded }) {
                 className="w-full p-4 bg-white/60 backdrop-blur-sm border border-white/30 rounded-2xl font-modern placeholder-[#8b6f47]/60 focus:outline-none focus:ring-2 focus:ring-[#d4784a]/50"
                 placeholder="Enter your beautiful craft's name..."
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
                 required
               />
             </div>
@@ -1051,7 +1171,9 @@ function AddProductModal({ onClose, onProductAdded }) {
                 placeholder="Tell the story of your craft..."
                 rows="4"
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 required
               />
 
@@ -1087,7 +1209,9 @@ function AddProductModal({ onClose, onProductAdded }) {
                 )}
 
                 <span className="text-sm font-handwritten text-[#8b6f47]">
-                  {isRecording ? 'Speak in your language...' : 'Or type manually above'}
+                  {isRecording
+                    ? "Speak in your language..."
+                    : "Or type manually above"}
                 </span>
               </div>
             </div>
@@ -1103,7 +1227,9 @@ function AddProductModal({ onClose, onProductAdded }) {
                   className="w-full p-4 bg-white/60 backdrop-blur-sm border border-white/30 rounded-2xl font-modern placeholder-[#8b6f47]/60 focus:outline-none focus:ring-2 focus:ring-[#d4784a]/50"
                   placeholder="0"
                   value={formData.unit_price}
-                  onChange={(e) => setFormData({ ...formData, unit_price: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, unit_price: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -1115,7 +1241,9 @@ function AddProductModal({ onClose, onProductAdded }) {
                 <select
                   className="w-full p-4 bg-white/60 backdrop-blur-sm border border-white/30 rounded-2xl font-modern focus:outline-none focus:ring-2 focus:ring-[#d4784a]/50"
                   value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, category: e.target.value })
+                  }
                   required
                 >
                   <option value="">Select Category</option>
@@ -1138,13 +1266,17 @@ function AddProductModal({ onClose, onProductAdded }) {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleFileChange(e, 'image')}
+                onChange={(e) => handleFileChange(e, "image")}
                 className="w-full p-4 bg-white/60 backdrop-blur-sm border border-white/30 rounded-2xl font-modern file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-[#d4784a] file:text-white file:font-medium hover:file:bg-[#c6633f] transition-colors"
               />
               {imagePreview && (
                 <div className="mt-4 relative inline-block">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#d4784a]/20 to-[#8b6f47]/20 rounded-2xl blur-lg"></div>
-                  <img src={imagePreview} alt="Preview" className="relative w-40 h-40 object-cover rounded-2xl border-2 border-white shadow-warm" />
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="relative w-40 h-40 object-cover rounded-2xl border-2 border-white shadow-warm"
+                  />
                 </div>
               )}
             </div>
@@ -1157,7 +1289,7 @@ function AddProductModal({ onClose, onProductAdded }) {
               <input
                 type="file"
                 accept="video/*"
-                onChange={(e) => handleFileChange(e, 'video')}
+                onChange={(e) => handleFileChange(e, "video")}
                 className="w-full p-4 bg-white/60 backdrop-blur-sm border border-white/30 rounded-2xl font-modern file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-purple-500 file:text-white file:font-medium hover:file:bg-purple-600 transition-colors"
               />
               {videoPreview && (
@@ -1232,7 +1364,6 @@ function AddProductModal({ onClose, onProductAdded }) {
   );
 }
 
-
 /* ================= PRODUCT DETAIL MODAL ================= */
 
 function ProductDetailModal({ product, onClose }) {
@@ -1245,7 +1376,7 @@ function ProductDetailModal({ product, onClose }) {
     allImages.push(product.image_url);
   }
   if (product.images && product.images.length > 0) {
-    product.images.forEach(img => {
+    product.images.forEach((img) => {
       if (img.image_url) {
         allImages.push(img.image_url);
       }
@@ -1254,20 +1385,24 @@ function ProductDetailModal({ product, onClose }) {
 
   // Navigation functions
   const goToPrevious = () => {
-    setSelectedImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+    setSelectedImageIndex((prev) =>
+      prev === 0 ? allImages.length - 1 : prev - 1,
+    );
     setIsZoomed(false);
   };
 
   const goToNext = () => {
-    setSelectedImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+    setSelectedImageIndex((prev) =>
+      prev === allImages.length - 1 ? 0 : prev + 1,
+    );
     setIsZoomed(false);
   };
 
   // Disable body scroll when modal is open
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, []);
 
@@ -1280,8 +1415,12 @@ function ProductDetailModal({ product, onClose }) {
           {/* Header */}
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h2 className="text-3xl font-artistic font-bold text-[#3d3021]">{product.title}</h2>
-              <p className="text-lg font-handwritten text-[#8b6f47] mt-1">{product.category}</p>
+              <h2 className="text-3xl font-artistic font-bold text-[#3d3021]">
+                {product.title}
+              </h2>
+              <p className="text-lg font-handwritten text-[#8b6f47] mt-1">
+                {product.category}
+              </p>
             </div>
             <button
               onClick={onClose}
@@ -1297,18 +1436,18 @@ function ProductDetailModal({ product, onClose }) {
               {allImages.length > 0 && (
                 <div className="relative">
                   <div
-                    className={`relative overflow-hidden rounded-2xl bg-gray-100 ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+                    className={`relative overflow-hidden rounded-2xl bg-gray-100 ${isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"}`}
                     onClick={() => setIsZoomed(!isZoomed)}
                   >
                     <img
                       src={allImages[selectedImageIndex]}
                       alt={`${product.title} - View ${selectedImageIndex + 1}`}
-                      className={`w-full transition-transform duration-300 ${isZoomed ? 'scale-150' : 'scale-100'}`}
+                      className={`w-full transition-transform duration-300 ${isZoomed ? "scale-150" : "scale-100"}`}
                       style={{
-                        minHeight: '400px',
-                        maxHeight: '500px',
-                        objectFit: 'contain',
-                        userSelect: 'none'
+                        minHeight: "400px",
+                        maxHeight: "500px",
+                        objectFit: "contain",
+                        userSelect: "none",
                       }}
                       draggable="false"
                     />
@@ -1357,10 +1496,11 @@ function ProductDetailModal({ product, onClose }) {
                         setSelectedImageIndex(index);
                         setIsZoomed(false);
                       }}
-                      className={`relative rounded-lg overflow-hidden border-2 transition-all ${selectedImageIndex === index
-                        ? 'border-[#d4784a] ring-2 ring-[#d4784a]/30'
-                        : 'border-gray-200 hover:border-[#d4784a]/50'
-                        }`}
+                      className={`relative rounded-lg overflow-hidden border-2 transition-all ${
+                        selectedImageIndex === index
+                          ? "border-[#d4784a] ring-2 ring-[#d4784a]/30"
+                          : "border-gray-200 hover:border-[#d4784a]/50"
+                      }`}
                     >
                       <img
                         src={img}
@@ -1375,12 +1515,14 @@ function ProductDetailModal({ product, onClose }) {
               {/* Video Section */}
               {product.video_url && (
                 <div className="mt-4">
-                  <h3 className="text-xl font-artistic font-semibold mb-3 text-[#3d3021]">Product Video</h3>
+                  <h3 className="text-xl font-artistic font-semibold mb-3 text-[#3d3021]">
+                    Product Video
+                  </h3>
                   <video
                     src={product.video_url}
                     controls
                     className="w-full rounded-2xl bg-black shadow-warm"
-                    style={{ maxHeight: '300px' }}
+                    style={{ maxHeight: "300px" }}
                     preload="metadata"
                   />
                 </div>
@@ -1393,23 +1535,35 @@ function ProductDetailModal({ product, onClose }) {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#d4784a]/10 to-[#8b6f47]/10 rounded-2xl"></div>
                 <div className="relative p-6 border border-[#d4784a]/20 rounded-2xl">
-                  <p className="text-sm font-modern text-[#8b6f47] mb-1">Price</p>
-                  <p className="text-5xl font-bold font-artistic text-[#d4784a]">₹{product.price}</p>
+                  <p className="text-sm font-modern text-[#8b6f47] mb-1">
+                    Price
+                  </p>
+                  <p className="text-5xl font-bold font-artistic text-[#d4784a]">
+                    ₹{product.price}
+                  </p>
                 </div>
               </div>
 
               {/* Description */}
               <div>
-                <h3 className="text-xl font-artistic font-semibold text-[#3d3021] mb-3">Description</h3>
-                <p className="text-[#6d5a3d] font-handwritten leading-relaxed text-lg">{product.description}</p>
+                <h3 className="text-xl font-artistic font-semibold text-[#3d3021] mb-3">
+                  Description
+                </h3>
+                <p className="text-[#6d5a3d] font-handwritten leading-relaxed text-lg">
+                  {product.description}
+                </p>
               </div>
 
               {/* Artisan Info */}
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-50/80 to-orange-50/60 rounded-2xl"></div>
                 <div className="relative p-4 border border-amber-200/50 rounded-2xl">
-                  <p className="text-sm font-modern text-[#8b6f47] mb-1">Crafted by</p>
-                  <p className="text-xl font-artistic font-semibold text-[#3d3021]">{product.artisan}</p>
+                  <p className="text-sm font-modern text-[#8b6f47] mb-1">
+                    Crafted by
+                  </p>
+                  <p className="text-xl font-artistic font-semibold text-[#3d3021]">
+                    {product.artisan}
+                  </p>
                 </div>
               </div>
 
@@ -1437,22 +1591,21 @@ function ProductDetailModal({ product, onClose }) {
   );
 }
 
-
 /* ================= EDIT PROFILE MODAL ================= */
 
 function EditProfileModal({ artisanData, onClose, onUpdate }) {
   const [formData, setFormData] = useState({
-    speciality: artisanData.speciality || '',
+    speciality: artisanData.speciality || "",
     experience: artisanData.experience || 0,
-    bio: '',
-    craft_story: artisanData.craftStory || '',
+    bio: "",
+    craft_story: artisanData.craftStory || "",
   });
 
   // Disable body scroll
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, []);
 
@@ -1460,16 +1613,16 @@ function EditProfileModal({ artisanData, onClose, onUpdate }) {
     e.preventDefault();
 
     try {
-      const response = await api.patch('store/artisan/profile/', formData);
+      const response = await api.patch("store/artisan/profile/", formData);
 
       if (response.status === 200) {
-        alert('Profile updated successfully! ✨');
+        alert("Profile updated successfully! ✨");
         onUpdate();
         onClose();
       }
     } catch (error) {
-      console.error('Update failed:', error);
-      alert('Failed to update profile. Please try again.');
+      console.error("Update failed:", error);
+      alert("Failed to update profile. Please try again.");
     }
   };
 
@@ -1493,7 +1646,9 @@ function EditProfileModal({ artisanData, onClose, onUpdate }) {
               <input
                 type="text"
                 value={formData.speciality}
-                onChange={(e) => setFormData({ ...formData, speciality: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, speciality: e.target.value })
+                }
                 className="w-full p-4 bg-white/60 backdrop-blur-sm border border-white/30 rounded-2xl font-modern placeholder-[#8b6f47]/60 focus:outline-none focus:ring-2 focus:ring-[#d4784a]/50"
                 placeholder="e.g., Pottery, Textiles, Jewelry"
                 required
@@ -1508,7 +1663,9 @@ function EditProfileModal({ artisanData, onClose, onUpdate }) {
               <input
                 type="number"
                 value={formData.experience}
-                onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, experience: e.target.value })
+                }
                 className="w-full p-4 bg-white/60 backdrop-blur-sm border border-white/30 rounded-2xl font-modern placeholder-[#8b6f47]/60 focus:outline-none focus:ring-2 focus:ring-[#d4784a]/50"
                 min="0"
                 required
@@ -1522,7 +1679,9 @@ function EditProfileModal({ artisanData, onClose, onUpdate }) {
               </label>
               <textarea
                 value={formData.bio}
-                onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, bio: e.target.value })
+                }
                 className="w-full p-4 bg-white/60 backdrop-blur-sm border border-white/30 rounded-2xl font-handwritten placeholder-[#8b6f47]/60 focus:outline-none focus:ring-2 focus:ring-[#d4784a]/50"
                 rows="3"
                 placeholder="Tell us about yourself..."
@@ -1536,7 +1695,9 @@ function EditProfileModal({ artisanData, onClose, onUpdate }) {
               </label>
               <textarea
                 value={formData.craft_story}
-                onChange={(e) => setFormData({ ...formData, craft_story: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, craft_story: e.target.value })
+                }
                 className="w-full p-4 bg-white/60 backdrop-blur-sm border border-white/30 rounded-2xl font-handwritten placeholder-[#8b6f47]/60 focus:outline-none focus:ring-2 focus:ring-[#d4784a]/50"
                 rows="4"
                 placeholder="Share your craft story..."
@@ -1567,20 +1728,22 @@ function EditProfileModal({ artisanData, onClose, onUpdate }) {
 }
 
 const goToNext = () => {
-  setSelectedImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+  setSelectedImageIndex((prev) =>
+    prev === allImages.length - 1 ? 0 : prev + 1,
+  );
   setIsZoomed(false);
 };
 
 // Keyboard navigation
 useEffect(() => {
   const handleKeyPress = (e) => {
-    if (e.key === 'ArrowLeft') goToPrevious();
-    if (e.key === 'ArrowRight') goToNext();
-    if (e.key === 'Escape') onClose();
+    if (e.key === "ArrowLeft") goToPrevious();
+    if (e.key === "ArrowRight") goToNext();
+    if (e.key === "Escape") onClose();
   };
 
-  window.addEventListener('keydown', handleKeyPress);
-  return () => window.removeEventListener('keydown', handleKeyPress);
+  window.addEventListener("keydown", handleKeyPress);
+  return () => window.removeEventListener("keydown", handleKeyPress);
 }, [selectedImageIndex, allImages.length]);
 
 // 360° rotation handlers
@@ -1600,8 +1763,10 @@ const handleMouseMove = (e) => {
     setRotation(newRotation);
     setStartX(e.clientX);
 
-    const imageIndex = Math.floor((newRotation / 360) * allImages.length) % allImages.length;
-    const normalizedIndex = imageIndex < 0 ? allImages.length + imageIndex : imageIndex;
+    const imageIndex =
+      Math.floor((newRotation / 360) * allImages.length) % allImages.length;
+    const normalizedIndex =
+      imageIndex < 0 ? allImages.length + imageIndex : imageIndex;
     setSelectedImageIndex(normalizedIndex);
   }
 };
@@ -1614,9 +1779,11 @@ const handleMouseUp = () => {
 useEffect(() => {
   if (is360Mode && !isDragging && allImages.length > 1) {
     const interval = setInterval(() => {
-      setRotation(prev => prev + 1);
-      const imageIndex = Math.floor((rotation / 360) * allImages.length) % allImages.length;
-      const normalizedIndex = imageIndex < 0 ? allImages.length + imageIndex : imageIndex;
+      setRotation((prev) => prev + 1);
+      const imageIndex =
+        Math.floor((rotation / 360) * allImages.length) % allImages.length;
+      const normalizedIndex =
+        imageIndex < 0 ? allImages.length + imageIndex : imageIndex;
       setSelectedImageIndex(normalizedIndex);
     }, 50);
 
@@ -1626,9 +1793,9 @@ useEffect(() => {
 
 // Disable body scroll when modal is open
 useEffect(() => {
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow = "hidden";
   return () => {
-    document.body.style.overflow = 'unset';
+    document.body.style.overflow = "unset";
   };
 }, []);
 
@@ -1656,8 +1823,13 @@ return (
           {allImages.length > 0 && (
             <div className="relative">
               <div
-                className={`relative overflow-hidden rounded-xl bg-gray-100 ${is360Mode ? 'cursor-grab active:cursor-grabbing' : isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
-                  }`}
+                className={`relative overflow-hidden rounded-xl bg-gray-100 ${
+                  is360Mode
+                    ? "cursor-grab active:cursor-grabbing"
+                    : isZoomed
+                      ? "cursor-zoom-out"
+                      : "cursor-zoom-in"
+                }`}
                 onClick={() => !is360Mode && setIsZoomed(!isZoomed)}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
@@ -1667,13 +1839,14 @@ return (
                 <img
                   src={allImages[selectedImageIndex]}
                   alt={`${product.title} - View ${selectedImageIndex + 1}`}
-                  className={`w-full transition-transform duration-300 ${isZoomed ? 'scale-150' : 'scale-100'
-                    }`}
+                  className={`w-full transition-transform duration-300 ${
+                    isZoomed ? "scale-150" : "scale-100"
+                  }`}
                   style={{
-                    minHeight: '400px',
-                    maxHeight: '500px',
-                    objectFit: 'contain',
-                    userSelect: 'none'
+                    minHeight: "400px",
+                    maxHeight: "500px",
+                    objectFit: "contain",
+                    userSelect: "none",
                   }}
                   draggable="false"
                 />
@@ -1687,12 +1860,13 @@ return (
                     setIsZoomed(false);
                     setRotation(0);
                   }}
-                  className={`absolute top-4 left-4 px-4 py-2 rounded-full text-sm font-medium transition-all ${is360Mode
-                    ? 'bg-[#c2794d] text-white'
-                    : 'bg-black/60 text-white hover:bg-black/80'
-                    }`}
+                  className={`absolute top-4 left-4 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    is360Mode
+                      ? "bg-[#c2794d] text-white"
+                      : "bg-black/60 text-white hover:bg-black/80"
+                  }`}
                 >
-                  {is360Mode ? '🔄 360° ON' : '🔄 360° View'}
+                  {is360Mode ? "🔄 360° ON" : "🔄 360° View"}
                 </button>
               )}
 
@@ -1723,14 +1897,14 @@ return (
               {/* Zoom Indicator - Hidden in 360 mode */}
               {!is360Mode && (
                 <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-                  {isZoomed ? '🔍 Click to zoom out' : '🔍 Click to zoom in'}
+                  {isZoomed ? "🔍 Click to zoom out" : "🔍 Click to zoom in"}
                 </div>
               )}
 
               {/* 360 Mode Instruction */}
               {is360Mode && (
                 <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-                  {isDragging ? '🖱️ Dragging...' : '🖱️ Drag to rotate'}
+                  {isDragging ? "🖱️ Dragging..." : "🖱️ Drag to rotate"}
                 </div>
               )}
 
@@ -1753,10 +1927,11 @@ return (
                     setSelectedImageIndex(index);
                     setIsZoomed(false);
                   }}
-                  className={`relative rounded-lg overflow-hidden border-2 transition-all ${selectedImageIndex === index
-                    ? 'border-[#c2794d] ring-2 ring-[#c2794d]/30'
-                    : 'border-gray-200 hover:border-[#c2794d]/50'
-                    }`}
+                  className={`relative rounded-lg overflow-hidden border-2 transition-all ${
+                    selectedImageIndex === index
+                      ? "border-[#c2794d] ring-2 ring-[#c2794d]/30"
+                      : "border-gray-200 hover:border-[#c2794d]/50"
+                  }`}
                 >
                   <img
                     src={img}
@@ -1771,12 +1946,14 @@ return (
           {/* Video Section */}
           {product.video_url && (
             <div className="mt-4">
-              <h3 className="text-lg font-semibold mb-2 text-[#3d3021]">Product Video</h3>
+              <h3 className="text-lg font-semibold mb-2 text-[#3d3021]">
+                Product Video
+              </h3>
               <video
                 src={product.video_url}
                 controls
                 className="w-full rounded-xl bg-black"
-                style={{ maxHeight: '300px' }}
+                style={{ maxHeight: "300px" }}
                 preload="metadata"
               />
             </div>
@@ -1788,19 +1965,27 @@ return (
           {/* Price */}
           <div className="bg-gradient-to-r from-[#c2794d]/10 to-[#8b6f47]/10 rounded-xl p-6">
             <p className="text-sm text-[#8b6f47] mb-1">Price</p>
-            <p className="text-4xl font-bold text-[#c2794d]">₹{product.price}</p>
+            <p className="text-4xl font-bold text-[#c2794d]">
+              ₹{product.price}
+            </p>
           </div>
 
           {/* Description */}
           <div>
-            <h3 className="text-lg font-semibold text-[#3d3021] mb-2">Description</h3>
-            <p className="text-[#6d5a3d] leading-relaxed">{product.description}</p>
+            <h3 className="text-lg font-semibold text-[#3d3021] mb-2">
+              Description
+            </h3>
+            <p className="text-[#6d5a3d] leading-relaxed">
+              {product.description}
+            </p>
           </div>
 
           {/* Artisan Info */}
           <div className="bg-amber-50 rounded-xl p-4">
             <p className="text-sm text-[#8b6f47] mb-1">Crafted by</p>
-            <p className="text-lg font-semibold text-[#3d3021]">{product.artisan}</p>
+            <p className="text-lg font-semibold text-[#3d3021]">
+              {product.artisan}
+            </p>
           </div>
 
           {/* Category Badge */}
@@ -1824,4 +2009,3 @@ return (
     </div>
   </div>
 );
-}
